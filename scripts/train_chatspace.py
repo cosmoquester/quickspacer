@@ -50,7 +50,7 @@ if __name__ == "__main__":
         args.min_space_remove_rate,
         args.max_space_remove_rate,
         args.num_parallel_reads,
-        args.num_paralle_calls,
+        args.num_parallel_calls,
         args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
     train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
