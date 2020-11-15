@@ -1,9 +1,3 @@
-# Python Project Setup
+# QuickSpacer
 
-- This repository is template for my python project
-
-## Things to be changed
-
-- "README.md" file contents
-- "setup.py" file contents
-- "sample_package" directory name
+- 빠른 속도와 준수한 정확도를 목표로하는 한국어 띄어쓰기 교정 모델입니다.
