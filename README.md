@@ -14,14 +14,19 @@
 ## Make Vocab
 
 ```bash
-python -m scripts.make_vocab --input-dir [corpus_directory_path] --vocab-path [vocab_file_path]
+python -m scripts.make_vocab \
+    --input-dir [corpus_directory_path] \
+    --vocab-path [vocab_file_path]
 ```
 기본 vocab은 resources/vocab.txt에 존재하지만 따로 문자열이 필요하거나 다른 언어의 띄어쓰기 모델을 만들 예정이라면 위 명령어를 통해 새로 vocab 파일을 만들 수 있습니다.
 
 ## Model Train
 
 ```bash
-python -m scripts.train_chatspace --model-name [model_name] --dataset-file-path [dataset_paths] --output-path [output_dir_path]
+python -m scripts.train_chatspace \
+    --model-name [model_name] \
+    --dataset-file-path [dataset_paths] \
+    --output-path [output_dir_path]
 ```
 모델은 위 명령어로 학습할 수 있습니다.
 - 현재 레포지토리에 존재하는 모델은 [ConvSpacer1, ConvSpacer2, ConvSpacer3] 세 종류입니다. model-name에는 이 세 가지 중 하나를 입력합니다.
@@ -42,7 +47,9 @@ python -m scripts.train_chatspace --help
 ### Make SavedModel
 
 ```bash
-python -m scripts.convert_to_savedmodel --model-weight-path [model_weight_path] --output-path [saved_model_path]
+python -m scripts.convert_to_savedmodel \
+    --model-weight-path [model_weight_path] \
+    --output-path [saved_model_path]
 ```
 위 명령어를 통해 모델을 TF SavedModel 형식으로 변환할 수 있습니다.
 - model-weight-path는 train을 통해서 models에 저장된 경로를 입력하면 되는데 "spacer-XXepoch-xxx.index" 이런 식으로 파일이 존재하는데 "spacer-XXepoch-xxx" 까지만 입력합니다.
@@ -52,7 +59,9 @@ python -m scripts.convert_to_savedmodel --model-weight-path [model_weight_path] 
 
 convert_to_savedmodel로 변환한 모델은 두 개의 signature function을 가지고 있습니다. 아래 명령들은 SavedModel을 만드는 것과는 무관하며 추가적인 설명을 위한 것입니다.
 ```bash
-$ saved_model_cli show --dir saved_spacer_model/1 --tag_set serve --signature_def serving_default
+$ saved_model_cli show --dir saved_spacer_model/1 \
+    --tag_set serve \
+    --signature_def serving_default
 2020-11-15 17:02:30.861944: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
 The given SavedModel SignatureDef contains the following input(s):
   inputs['texts'] tensor_info:
@@ -69,7 +78,10 @@ Method name is: tensorflow/serving/predict
 - default는 text를 입력받고 띄어쓰기가 완료된 문장을 반환하도록 되어있습니다. 위의 saved_model_cli를 통해 살펴보면 DT_STRING이 입출력인 것을 알 수 있습니다.
 
 ```bash
-$ saved_model_cli run --dir saved_spacer_model/1 --tag_set serve --signature_def serving_default --input_exprs 'texts=["근데이것좀띄워주시겠어요?", "싫은데영ㅎㅎ"]'
+$ saved_model_cli run --dir saved_spacer_model/1 \
+    --tag_set serve \
+    --signature_def serving_default \
+    --input_exprs 'texts=["근데이것좀띄워주시겠어요?", "싫은데영ㅎㅎ"]'
 2020-11-15 17:06:27.735637: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
 2020-11-15 17:06:28.659347: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
 [각종 TF log들 ...]
@@ -81,7 +93,9 @@ Result for output key output_0:
 - Unicode 바이너리로 나와서 조금 불편한데 한글로 바꿔보면 ["근데 이것 좀 띄워 주시겠어요?","싫은데 영ㅎㅎ"] 으로 띄어쓰기를 해주었습니다.
 
 ```bash
-saved_model_cli show --dir saved_spacer_model/1 --tag_set serve --signature_def model_inference
+saved_model_cli show --dir saved_spacer_model/1 \
+    --tag_set serve \
+    --signature_def model_inference
 2020-11-15 17:03:19.988061: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
 The given SavedModel SignatureDef contains the following input(s):
   inputs['tokens'] tensor_info:
@@ -99,7 +113,10 @@ Method name is: tensorflow/serving/predict
 - 아까와 같은 문장을 숫자로 변환하여 테스트해보겠습니다.
 
 ```bash
-$ saved_model_cli run --dir saved_spacer_model/1 --tag_set serve --signature_def model_inference --input_exprs 'tokens=[[88,26,4,100,112,1241,93,64,38,56, 6,19,15],[216,33,26,202,67,67,0,0,0,0,0,0,0]]'
+$ saved_model_cli run --dir saved_spacer_model/1 \
+    --tag_set serve \
+    --signature_def model_inference \
+    --input_exprs 'tokens=[[88,26,4,100,112,1241,93,64,38,56, 6,19,15],[216,33,26,202,67,67,0,0,0,0,0,0,0]]'
 [각종 Tensorflow log...]
 Result for output key output_0:
 [[2.5608379e-03 9.8520654e-01 1.2721949e-03 9.7731644e-01 9.9997485e-01
@@ -115,12 +132,17 @@ Result for output key output_0:
 ### Deploy using Tensorflow/serving docker
 
 ```bash
-docker run  --rm --name test -p 8500:8500 -p 8501:8501 --mount type=bind,source=`pwd`/saved_spacer_model,target=/models/spacer -e MODEL_NAME=spacer -t tensorflow/serving:latest
+docker run  --rm --name test -p 8500:8500 -p 8501:8501 \
+    --mount type=bind,source=`pwd`/saved_spacer_model,target=/models/spacer \
+    -e MODEL_NAME=spacer \
+    -t tensorflow/serving:latest
 ```
 간단히 docker로 tensorflow serving 서버를 여는 명령입니다. 현재 모델 파일은 실제로는 `pwd`/saved_1pacer_model/1 에 저장되어 있습니다.
 
 ```bash
-curl -X POST localhost:8501/v1/models/spacer:predict -H "Content-Type: application/json" -d '{"instances":["근데이것좀띄워주시겠어요!", "싫은데영ㅎㅎ"]}'
+curl -X POST localhost:8501/v1/models/spacer:predict \
+    -H "Content-Type: application/json" \
+    -d '{"instances":["근데이것좀띄워주시겠어요!", "싫은데영ㅎㅎ"]}'
 {
     "predictions": ["근데 이것 좀 띄워 주시겠어요!", "싫은데 영ㅎㅎ"
     ]
@@ -135,7 +157,9 @@ curl -X POST localhost:8501/v1/models/spacer:predict -H "Content-Type: applicati
 ### Make TFJS Graph Model
 
 ```bash
-python -m scripts.convert_to_tfjsmodel --saved-model-path [saved_model_path] --output-path [output_dir_path]
+python -m scripts.convert_to_tfjsmodel \
+    --saved-model-path [saved_model_path] \
+    --output-path [output_dir_path]
 ```
 이 명령어를 통해 TFJS 모델로 변환할 수 있습니다.
 TFJS에서도 문장을 넣고 문장이 나오도록 만들고 싶었지만 Vocab을 포함하고 있는 signature function은 tfjs로 변환하는데 에러가 발생하여 tfjs에선 모델 추론만 하도록 했습니다.
