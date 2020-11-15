@@ -27,13 +27,13 @@ class ConvSpacer1(tf.keras.Model):
 
 
 class ConvSpacer2(tf.keras.Model):
-    def __init__(self, embedding_dim, hidden_dim, dropout, vocab_size=DEFAULT_VOCAB_SIZE):
+    def __init__(self, embedding_dim, hidden_dim, kernel_size1, kernel_size2, dropout, vocab_size=DEFAULT_VOCAB_SIZE):
         super(ConvSpacer2, self).__init__()
 
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
 
-        self.conv1 = tf.keras.layers.Conv1D(hidden_dim, 5, activation="relu", padding="same")
-        self.conv2 = tf.keras.layers.Conv1D(hidden_dim, 7, activation="relu", padding="same")
+        self.conv1 = tf.keras.layers.Conv1D(hidden_dim, kernel_size1, activation="relu", padding="same")
+        self.conv2 = tf.keras.layers.Conv1D(hidden_dim, kernel_size2, activation="relu", padding="same")
         self.dropout = tf.keras.layers.Dropout(dropout)
 
         self.dense = tf.keras.layers.Dense(1)
@@ -59,17 +59,27 @@ class ConvSpacer2(tf.keras.Model):
 
 
 class ConvSpacer3(tf.keras.Model):
-    def __init__(self, embedding_dim, hidden_dim, dropout, vocab_size=DEFAULT_VOCAB_SIZE):
+    def __init__(
+        self,
+        embedding_dim,
+        hidden_dim,
+        kernel_size1,
+        kernel_size2,
+        kernel_size3,
+        kernel_size4,
+        dropout,
+        vocab_size=DEFAULT_VOCAB_SIZE,
+    ):
         super(ConvSpacer3, self).__init__()
 
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
 
-        self.conv1 = tf.keras.layers.Conv1D(hidden_dim, 3, activation="relu", padding="same")
-        self.conv2 = tf.keras.layers.Conv1D(hidden_dim, 5, activation="relu", padding="same")
-        self.conv3 = tf.keras.layers.Conv1D(hidden_dim, 7, activation="relu", padding="same")
+        self.conv1 = tf.keras.layers.Conv1D(hidden_dim, kernel_size1, activation="relu", padding="same")
+        self.conv2 = tf.keras.layers.Conv1D(hidden_dim, kernel_size2, activation="relu", padding="same")
+        self.conv3 = tf.keras.layers.Conv1D(hidden_dim, kernel_size3, activation="relu", padding="same")
         self.dropout = tf.keras.layers.Dropout(dropout)
 
-        self.conv4 = tf.keras.layers.Conv1D(hidden_dim, 5, activation="relu", padding="same")
+        self.conv4 = tf.keras.layers.Conv1D(hidden_dim, kernel_size4, activation="relu", padding="same")
         self.dense = tf.keras.layers.Dense(1)
 
     def call(self, inputs, training=None):

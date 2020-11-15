@@ -1,5 +1,9 @@
 {
     "embedding_dim": 128,
     "hidden_dim": 256,
+    "kernel_size1": 5,
+    "kernel_size2": 7,
+    "kernel_size3": 11,
+    "kernel_size4": 5,
     "dropout": 0.3
 }
