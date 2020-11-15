@@ -9,10 +9,11 @@ from .constant import DEFAULT_OOV_INDEX, DEFAULT_SPACE_INDEX, DEFAULT_VOCAB_PATH
 
 def get_dataset(
     dataset_file_path: str,
-    remove_rate: float,
-    vocab_file_path: str = DEFAULT_VOCAB_PATH,
+    min_remove_rate: float,
+    max_remove_rate: float,
     num_parallel_reads: int = 4,
     num_parallel_calls: int = 4,
+    vocab_file_path: str = DEFAULT_VOCAB_PATH,
     oov_index: Union[tf.Tensor, int] = DEFAULT_OOV_INDEX,
     space_index: Union[tf.Tensor, int] = DEFAULT_SPACE_INDEX,
 ) -> tf.data.Dataset:
@@ -20,10 +21,11 @@ def get_dataset(
     Read dataset file and construct tensorflow dataset
 
     :param dataset_file_path: dataset (txt) file path.
-    :param remove_rate: remove spaces by this rate not all spaces.
-    :param vocab_file_path: vocab file path.
+    :param min_remove_rate: minimum rate to remove spaces of all spaces.
+    :param max_remove_rate: maximum rate to remove spaces of all spaces.
     :param num_parallel_reads: number for parallel reading
     :param num_parallel_calls: number for parallel mapping
+    :param vocab_file_path: vocab file path.
     :param oov_index: OOV index.
     :param space_index: " " character index in vocab.
     """
@@ -32,7 +34,12 @@ def get_dataset(
         tf.data.TextLineDataset(dataset_file_path, num_parallel_reads=num_parallel_reads)
         .map(partial(sentence_to_index, vocab=vocab, oov_index=oov_index), num_parallel_calls=num_parallel_calls)
         .map(
-            partial(sentence_to_dataset, remove_rate=remove_rate, space_index=space_index),
+            partial(
+                sentence_to_dataset,
+                min_remove_rate=min_remove_rate,
+                max_remove_rate=max_remove_rate,
+                space_index=space_index,
+            ),
             num_parallel_calls=num_parallel_calls,
         )
     )
@@ -55,16 +62,21 @@ def sentence_to_index(
 
 
 def sentence_to_dataset(
-    token_ords: tf.Tensor, remove_rate: Union[float, tf.Tensor], space_index=DEFAULT_SPACE_INDEX
+    token_ords: tf.Tensor,
+    min_remove_rate: Union[float, tf.Tensor],
+    max_remove_rate: Union[float, tf.Tensor],
+    space_index=DEFAULT_SPACE_INDEX,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
     """
     Remove spaces in tokens by remove_rate
 
     :param token_ords: int type 1D tensor of a sentence shaped (SequenceLength).
-    :param remove_rate: rate to remove spaces of all spaces.
+    :param min_remove_rate: minimum rate to remove spaces of all spaces.
+    :param max_remove_rate: maximum rate to remove spaces of all spaces.
     :param space_index: vocab index of space " ".
     :return: tuple of input and label. Both shapes are (SequenceLengthAfterRemoveSpace)
     """
+    remove_rate = tf.random.uniform((), min_remove_rate, max_remove_rate)
     space_indices = tf.where(token_ords == space_index)[:, 0]
     num_removed_spaces = tf.cast(tf.math.ceil(tf.cast(tf.size(space_indices), tf.float32) * remove_rate), tf.int32)
     removed_space_indices = tf.random.shuffle(space_indices)[:num_removed_spaces]

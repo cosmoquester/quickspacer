@@ -17,7 +17,7 @@ from quickspacer.data import sentence_to_dataset
 def test_sentence_to_dataset(token_ords, remove_rate):
     num_space = tf.math.count_nonzero(token_ords == DEFAULT_SPACE_INDEX)
     num_removed = tf.cast(tf.math.ceil(tf.cast(num_space, tf.float32) * remove_rate), tf.int32)
-    sentence_data, labels = sentence_to_dataset(token_ords, remove_rate)
+    sentence_data, labels = sentence_to_dataset(token_ords, remove_rate, remove_rate)
 
     tf.debugging.assert_equal(tf.size(token_ords) - tf.size(sentence_data), num_removed)
     tf.debugging.assert_equal(
@@ -31,5 +31,6 @@ def test_sentence_to_dataset(token_ords, remove_rate):
             restored_data.append(DEFAULT_SPACE_INDEX)
 
     tf.debugging.assert_equal(
-        token_ords, tf.concat(restored_data, axis=0),
+        token_ords,
+        tf.concat(restored_data, axis=0),
     )

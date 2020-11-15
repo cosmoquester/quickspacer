@@ -17,7 +17,8 @@ if __name__ == "__main__":
     parser.add_argument("--model-name", type=str, default="ConvSpacer1")
     parser.add_argument("--model-config-file", type=str, default="configs/conv1-spacer-config.json")
     parser.add_argument("--pretrained-model-path", type=str, default=None)
-    parser.add_argument("--space-remove-rate", type=float, default=0.5)
+    parser.add_argument("--min-space-remove-rate", type=float, default=0.3)
+    parser.add_argument("--max-space-remove-rate", type=float, default=0.9)
     parser.add_argument("--shuffle-buffer-size", type=int, default=100000)
     parser.add_argument("--vocab-file-path", type=str, default=DEFAULT_VOCAB_PATH, help="vocab file path")
     parser.add_argument("--num-parallel-reads", type=int, default=4)
@@ -46,10 +47,11 @@ if __name__ == "__main__":
     # Construct Dataset
     dataset = get_dataset(
         glob.glob(args.dataset_file_path),
-        args.space_remove_rate,
-        args.vocab_file_path,
+        args.min_space_remove_rate,
+        args.max_space_remove_rate,
         args.num_parallel_reads,
         args.num_paralle_calls,
+        args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
     train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
     valid_dataset = dataset.take(args.num_val_batch).padded_batch(args.val_batch_size)
