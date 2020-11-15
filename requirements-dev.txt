@@ -1,4 +1,4 @@
-black
+black==19.10b
 isort
 pytest
 pytest-cov
