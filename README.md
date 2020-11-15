@@ -7,7 +7,7 @@
 
 # Demo
 
-데모는 TFJS로 만들어져 있으며 https://psj8252.github.io/kor-spacer-model/ 에서 사용해보실 수 있습니다.
+데모는 TFJS로 만들어져 있으며 https://psj8252.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
 
 # Train
 
