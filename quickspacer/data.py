@@ -66,8 +66,11 @@ def sentence_to_dataset(
     )
     label_indices = tf.sort(removed_space_indices) - tf.range(1, tf.size(removed_space_indices) + 1, dtype=tf.int64)
     labels = tf.scatter_nd(
-        label_indices[:, tf.newaxis], tf.ones(num_removed_spaces, tf.int32), [tf.size(token_ords) - num_removed_spaces],
+        label_indices[:, tf.newaxis], tf.ones(num_removed_spaces, tf.int32), [tf.size(token_ords) - num_removed_spaces]
     )
+    # In case space is consecutive (ex "안   녕") and remove consecutive space
+    # labels can be value more than 1, so prevent that situation
+    labels = tf.where(labels <= 1, labels, 1)
 
     return tf.gather(token_ords, tf.where(token_ords != -1))[:, 0], labels
 
