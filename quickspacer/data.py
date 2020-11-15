@@ -11,6 +11,8 @@ def get_dataset(
     dataset_file_path: str,
     remove_rate: float,
     vocab_file_path: str = DEFAULT_VOCAB_PATH,
+    num_parallel_reads: int = 4,
+    num_parallel_calls: int = 4,
     oov_index: Union[tf.Tensor, int] = DEFAULT_OOV_INDEX,
     space_index: Union[tf.Tensor, int] = DEFAULT_SPACE_INDEX,
 ) -> tf.data.Dataset:
@@ -20,14 +22,19 @@ def get_dataset(
     :param dataset_file_path: dataset (txt) file path.
     :param remove_rate: remove spaces by this rate not all spaces.
     :param vocab_file_path: vocab file path.
+    :param num_parallel_reads: number for parallel reading
+    :param num_parallel_calls: number for parallel mapping
     :param oov_index: OOV index.
     :param space_index: " " character index in vocab.
     """
     vocab = load_vocab(vocab_file_path)
     dataset = (
-        tf.data.TextLineDataset(dataset_file_path)
-        .map(partial(sentence_to_index, vocab=vocab, oov_index=oov_index))
-        .map(partial(sentence_to_dataset, remove_rate=remove_rate, space_index=space_index))
+        tf.data.TextLineDataset(dataset_file_path, num_parallel_reads=num_parallel_reads)
+        .map(partial(sentence_to_index, vocab=vocab, oov_index=oov_index), num_parallel_calls=num_parallel_calls)
+        .map(
+            partial(sentence_to_dataset, remove_rate=remove_rate, space_index=space_index),
+            num_parallel_calls=num_parallel_calls,
+        )
     )
     return dataset
 

@@ -8,6 +8,7 @@ import tensorflow as tf
 import tensorflow_addons as tfa
 
 from quickspacer import model
+from quickspacer.constant import DEFAULT_VOCAB_PATH
 from quickspacer.data import get_dataset
 from quickspacer.utils import f1_loss, f1_score, learning_rate_scheduler
 
@@ -18,6 +19,9 @@ if __name__ == "__main__":
     parser.add_argument("--pretrained-model-path", type=str, default=None)
     parser.add_argument("--space-remove-rate", type=float, default=0.5)
     parser.add_argument("--shuffle-buffer-size", type=int, default=100000)
+    parser.add_argument("--vocab-file-path", type=str, default=DEFAULT_VOCAB_PATH, help="vocab file path")
+    parser.add_argument("--num-parallel-reads", type=int, default=4)
+    parser.add_argument("--num-parallel-calls", type=int, default=4)
     parser.add_argument("--output-path", default="quickspacer_checkpoints/")
     parser.add_argument("--dataset-file-path", default="drama_all.txt", help="a text file or multiple files ex) *.txt")
     parser.add_argument("--loss", type=str, choices=["f1", "bce"], default="bce", help="loss function for training")
@@ -40,7 +44,13 @@ if __name__ == "__main__":
     shutil.copy(args.model_config_file, args.output_path)
 
     # Construct Dataset
-    dataset = get_dataset(glob.glob(args.dataset_file_path), args.space_remove_rate).shuffle(args.shuffle_buffer_size)
+    dataset = get_dataset(
+        glob.glob(args.dataset_file_path),
+        args.space_remove_rate,
+        args.vocab_file_path,
+        args.num_parallel_reads,
+        args.num_paralle_calls,
+    ).shuffle(args.shuffle_buffer_size)
     train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
     valid_dataset = dataset.take(args.num_val_batch).padded_batch(args.val_batch_size)
 
