@@ -63,8 +63,8 @@ jobs:
           name: Run black, isort
           command: |
             source env/bin/activate
-            black --check quickspacer tests
-            isort quickspacer tests
+            black --check quickspacer scripts tests
+            isort quickspacer scripts tests
 
 workflows:
   main:
