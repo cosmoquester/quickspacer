@@ -1,2 +1,4 @@
 tensorflow
 tensorflow-addons
+tensorflowjs
+tqdm
