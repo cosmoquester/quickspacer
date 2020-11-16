@@ -23,7 +23,7 @@ python -m scripts.make_vocab \
 ## Model Train
 
 ```bash
-python -m scripts.train_chatspace \
+python -m scripts.train_quickspacer \
     --model-name [model_name] \
     --dataset-file-path [dataset_paths] \
     --output-path [output_dir_path]
@@ -34,7 +34,7 @@ python -m scripts.train_chatspace \
 - dataset은 UTF-8로 인코딩 된 텍스트파일 형태입니다. 띄어쓰기가 올바르게 되어있는 문장이라고 가정하고 학습합니다. 여러 파일을 입력할 수 있습니다. ex) "corpus_*.txt"
 
 ```bash
-python -m scripts.train_chatspace --help
+python -m scripts.train_quickspacer --help
 ```
 를 보면 여러 학습 parameter을 입력할 수 있습니다.
 
