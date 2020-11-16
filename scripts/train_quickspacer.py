@@ -31,8 +31,8 @@ if __name__ == "__main__":
     parser.add_argument("--learning-rate", type=float, default=2e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-5)
     parser.add_argument("--min-learning-rate", type=float, default=1e-8)
-    parser.add_argument("--batch-size", type=int, default=1024)
-    parser.add_argument("--val-batch-size", type=int, default=2048)
+    parser.add_argument("--batch-size", type=int, default=8192)
+    parser.add_argument("--val-batch-size", type=int, default=8192)
     parser.add_argument("--num-val-batch", type=int, default=30000)
     parser.add_argument("--tensorboard-update-freq", type=int, default=100)
     args = parser.parse_args()
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
     train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
-    valid_dataset = dataset.take(args.num_val_batch).padded_batch(args.val_batch_size)
+    valid_dataset = dataset.take(args.num_val_batch).padded_batch(max(args.batch_size, args.val_batch_size))
 
     # Model Initialize
     with open(args.model_config_file) as f:
