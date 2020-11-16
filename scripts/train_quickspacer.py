@@ -53,7 +53,7 @@ if __name__ == "__main__":
         args.num_parallel_calls,
         args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
-    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
+    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size).repeat()
     valid_dataset = dataset.take(args.num_val_batch).padded_batch(max(args.batch_size, args.val_batch_size))
 
     # Model Initialize
