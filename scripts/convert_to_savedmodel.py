@@ -8,7 +8,8 @@ from quickspacer import model
 
 
 def sentence_to_index(
-    sentence: tf.Tensor, vocab: tf.keras.layers.experimental.preprocessing.TextVectorization,
+    sentence: tf.Tensor,
+    vocab: tf.keras.layers.experimental.preprocessing.TextVectorization,
 ):
     """
     functions as same as quickspacer.data.sentence_to_index.
@@ -82,5 +83,10 @@ if __name__ == "__main__":
 
     model.vocab = vocab
     tf.saved_model.save(
-        model, args.output_path, signatures={"serving_default": space_texts, "model_inference": model_inference,},
+        model,
+        args.output_path,
+        signatures={
+            "serving_default": space_texts,
+            "model_inference": model_inference,
+        },
     )
