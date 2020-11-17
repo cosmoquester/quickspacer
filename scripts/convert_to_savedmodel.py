@@ -8,8 +8,7 @@ from quickspacer import model
 
 
 def sentence_to_index(
-    sentence: tf.Tensor,
-    vocab: tf.keras.layers.experimental.preprocessing.TextVectorization,
+    sentence: tf.Tensor, vocab: tf.keras.layers.experimental.preprocessing.TextVectorization,
 ):
     """
     functions as same as quickspacer.data.sentence_to_index.
@@ -74,7 +73,7 @@ if __name__ == "__main__":
         spaced_sentences = tf.where(space_mask, texts.to_tensor(), (texts + " ").to_tensor())
         spaced_sentences = tf.strings.reduce_join(spaced_sentences, axis=1)
 
-        return spaced_sentences
+        return {"spaced_sentences": spaced_sentences}
 
     @tf.function(input_signature=[tf.TensorSpec((None, None), tf.int32)])
     def model_inference(tokens):
@@ -83,10 +82,5 @@ if __name__ == "__main__":
 
     model.vocab = vocab
     tf.saved_model.save(
-        model,
-        args.output_path,
-        signatures={
-            "serving_default": space_texts,
-            "model_inference": model_inference,
-        },
+        model, args.output_path, signatures={"serving_default": space_texts, "model_inference": model_inference},
     )

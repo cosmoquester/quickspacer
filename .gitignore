@@ -18,3 +18,7 @@ venv.bak/
 
 # log file
 *.log
+
+# script output files
+saved_spacer_model/
+tfjs_spacer_model/

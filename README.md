@@ -69,7 +69,7 @@ The given SavedModel SignatureDef contains the following input(s):
       shape: (-1)
       name: serving_default_texts:0
 The given SavedModel SignatureDef contains the following output(s):
-  outputs['output_0'] tensor_info:
+  outputs['spaced_sentences'] tensor_info:
       dtype: DT_STRING
       shape: unknown_rank
       name: StatefulPartitionedCall_1:0
@@ -85,7 +85,7 @@ $ saved_model_cli run --dir saved_spacer_model/1 \
 2020-11-15 17:06:27.735637: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
 2020-11-15 17:06:28.659347: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
 [각종 TF log들 ...]
-Result for output key output_0:
+Result for output key spaced_sentences:
 [b'\xea\xb7\xbc\xeb\x8d\xb0 \xec\x9d\xb4\xea\xb2\x83 \xec\xa2\x80 \xeb\x9d\x84\xec\x9b\x8c \xec\xa3\xbc\xec\x8b\x9c\xea\xb2\xa0\xec\x96\xb4\xec\x9a\x94?'
  b'\xec\x8b\xab\xec\x9d\x80\xeb\x8d\xb0 \xec\x98\x81\xe3\x85\x8e\xe3\x85\x8e']
 ```
@@ -93,7 +93,7 @@ Result for output key output_0:
 - Unicode 바이너리로 나와서 조금 불편한데 한글로 바꿔보면 ["근데 이것 좀 띄워 주시겠어요?","싫은데 영ㅎㅎ"] 으로 띄어쓰기를 해주었습니다.
 
 ```bash
-saved_model_cli show --dir saved_spacer_model/1 \
+$ saved_model_cli show --dir saved_spacer_model/1 \
     --tag_set serve \
     --signature_def model_inference
 2020-11-15 17:03:19.988061: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcudart.so.10.1
@@ -132,7 +132,7 @@ Result for output key output_0:
 ### Deploy using Tensorflow/serving docker
 
 ```bash
-docker run  --rm --name test -p 8500:8500 -p 8501:8501 \
+$ docker run  --rm --name test -p 8500:8500 -p 8501:8501 \
     --mount type=bind,source=`pwd`/saved_spacer_model,target=/models/spacer \
     -e MODEL_NAME=spacer \
     -t tensorflow/serving:latest
@@ -140,7 +140,7 @@ docker run  --rm --name test -p 8500:8500 -p 8501:8501 \
 간단히 docker로 tensorflow serving 서버를 여는 명령입니다. 현재 모델 파일은 실제로는 `pwd`/saved_1pacer_model/1 에 저장되어 있습니다.
 
 ```bash
-curl -X POST localhost:8501/v1/models/spacer:predict \
+$ curl -X POST localhost:8501/v1/models/spacer:predict \
     -H "Content-Type: application/json" \
     -d '{"instances":["근데이것좀띄워주시겠어요!", "싫은데영ㅎㅎ"]}'
 {
