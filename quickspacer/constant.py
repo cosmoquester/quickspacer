@@ -2,7 +2,7 @@ import os
 
 import tensorflow as tf
 
-RESOURCE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "resources"))
+RESOURCE_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), "resources"))
 DEFAULT_VOCAB_PATH = os.path.join(RESOURCE_PATH, "vocab.txt")
 DEFAULT_MODEL_PATH = os.path.join(RESOURCE_PATH, "default_saved_model", "1")
 DEFAULT_OOV_INDEX = tf.constant(1, dtype=tf.int32)
