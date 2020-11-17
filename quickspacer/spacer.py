@@ -1,3 +1,4 @@
+import os
 from typing import Iterable
 
 import tensorflow as tf
@@ -6,7 +7,11 @@ from .constant import DEFAULT_MODEL_PATH
 
 
 class Spacer:
-    def __init__(self, saved_model_dir=DEFAULT_MODEL_PATH):
+    def __init__(self, level=1, saved_model_dir=None):
+        if saved_model_dir is None:
+            assert level in (1, 2, 3), "level should be one of (1,2,3)!"
+            saved_model_dir = os.path.join(DEFAULT_MODEL_PATH, str(level))
+
         self.model = tf.saved_model.load(saved_model_dir)
 
     def space(self, sentences: Iterable[str]) -> Iterable[str]:
