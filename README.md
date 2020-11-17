@@ -36,7 +36,7 @@ python -m scripts.make_vocab \
     --input-dir [corpus_directory_path] \
     --vocab-path [vocab_file_path]
 ```
-기본 vocab은 resources/vocab.txt에 존재하지만 따로 문자열이 필요하거나 다른 언어의 띄어쓰기 모델을 만들 예정이라면 위 명령어를 통해 새로 vocab 파일을 만들 수 있습니다.
+기본 vocab은 quickspacer/resources/vocab.txt에 존재하지만 따로 문자열이 필요하거나 다른 언어의 띄어쓰기 모델을 만들 예정이라면 위 명령어를 통해 새로 vocab 파일을 만들 수 있습니다.
 
 ## Model Train
 

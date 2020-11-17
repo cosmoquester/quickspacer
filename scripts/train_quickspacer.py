@@ -85,7 +85,7 @@ if __name__ == "__main__":
         steps_per_epoch=args.steps_per_epoch,
         callbacks=[
             tf.keras.callbacks.ModelCheckpoint(
-                os.path.join(args.output_path, "models", "spacer-{epoch}epoch-{val_f1_score:.4f}f1"),
+                os.path.join(args.output_path, "models", "spacer-{epoch}epoch-{val_f1_score:.4f}f1.ckpt"),
                 save_weights_only=True,
                 verbose=1,
             ),

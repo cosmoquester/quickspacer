@@ -5,6 +5,7 @@ from functools import partial
 import tensorflow as tf
 
 from quickspacer import model
+from quickspacer.constant import DEFAULT_VOCAB_PATH
 
 
 def sentence_to_index(
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument("--model-name", type=str, default="ConvSpacer1", help="Model class name in quickspacer.model")
     parser.add_argument("--model-config-file", type=str, default="configs/conv1-spacer-config.json", help="Config file path for model")
     parser.add_argument("--model-weight-path", type=str, required=True, help="Model weight file path saved in training")
-    parser.add_argument("--vocab-path", type=str, default="resources/vocab.txt", help="Vocab file path")
+    parser.add_argument("--vocab-path", type=str, default=DEFAULT_VOCAB_PATH, help="Vocab file path")
     parser.add_argument("--output-path", type=str, default="saved_spacer_model/1", help="Savedmodel path")
     parser.add_argument("--threshold", type=float, default=0.5, help="Threshold to space")
     parser.add_argument("--batch-size", type=int, default=1024)
