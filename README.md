@@ -9,6 +9,24 @@
 
 데모는 TFJS로 만들어져 있으며 https://psj8252.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
 
+# Install & Usage
+
+```bash
+pip3 install git+https://github.com/psj8252/quickspacer.git
+```
+위 명령어로 설치하실 수 있습니다.
+
+```python
+from quickspacer import Spacer
+
+spacer = Spacer()
+spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되어있는 좋은 말"])
+```
+이런식으로 사용하실 수 있습니다. spacer.space() 함수는 띄어쓰기가 된 리스트를 반환합니다.
+
+
+만약 모델을 따로 학습시키셨다면, `spacer = Spacer("somewhere/my_custom_savedmodel_dir")`로 인자를 넘겨 직접학습한 모델을 사용할 수 있습니다.
+
 # Train
 
 ## Make Vocab
