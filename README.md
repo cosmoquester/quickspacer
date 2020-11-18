@@ -4,10 +4,11 @@
 
 
 - 빠른 속도와 준수한 정확도를 목표로하는 한국어 띄어쓰기 교정 모델입니다.
+- 이 레포지토리에 있는 모델들은 [모두의 말뭉치](https://corpus.korean.go.kr) `국립국어원(2020). 국립국어원 문어 말뭉치(버전 1.0)` 데이터를 이용하여 학습한 모델입니다.
 
 # Demo
 
-데모는 TFJS로 만들어져 있으며 https://psj8252.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
+데모는 Tensorflow JS로 만들어져 있으며 https://psj8252.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
 
 # Install & Usage
 
@@ -172,7 +173,7 @@ $ curl -X POST localhost:8501/v1/models/spacer:predict \
 
 ## Deploy using Tensorflowjs
 
-다음은 tensorflowjs를 이용해서 서버가 아닌 클라이언트의 브라우저에서 추론하도록할 수 있습니다. 데모페이지에 있는 것도 TFJS를 이용한 것입니다.
+다음은 tensorflowjs를 이용해서 서버가 아닌 클라이언트의 브라우저에서 추론하도록할 수 있습니다. 데모페이지에 있는 것도 Tensorflow JS를 이용한 것입니다.
 
 ### Make TFJS Graph Model
 
@@ -181,11 +182,11 @@ python -m scripts.convert_to_tfjsmodel \
     --saved-model-path [saved_model_path] \
     --output-path [output_dir_path]
 ```
-이 명령어를 통해 TFJS 모델로 변환할 수 있습니다.
-TFJS에서도 문장을 넣고 문장이 나오도록 만들고 싶었지만 Vocab을 포함하고 있는 signature function은 tfjs로 변환하는데 에러가 발생하여 tfjs에선 모델 추론만 하도록 했습니다.
+이 명령어를 통해 Tensorflow JS 모델로 변환할 수 있습니다.
+TFJS에서도 문장을 넣고 문장이 나오도록 만들고 싶었지만 Vocab을 포함하고 있는 signature function은 TFJS로 변환하는데 에러가 발생하여 TFJS에선 모델 추론만 하도록 했습니다.
 위 파이썬 스크립트를 이용하지 않더라도 `tensorflowjs_wizard`나 `tensorflowjs_converter` 명령어를 바로 사용해도 됩니다.
 
-### Use TFJS Graph Model
+### Use Tensorflow JS Graph Model
 
 - https://js.tensorflow.org/api/latest/ 를 참고하면 js로 사용할 수 있는 API가 정리되어 있습니다.
 - tfjs를 사용하려면 https://www.tensorflow.org/js/tutorials/setup에 나와있는 것처럼 tensorflow js 파일을 넣어줘야합니다.
