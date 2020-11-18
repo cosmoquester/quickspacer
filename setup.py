@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="quickspacer",
-    version="0.0.1",
+    version="1.0.0",
     description="Korean spacing correction model that aims for fast speed and moderate accuracy.",
     python_requires=">=3.7",
     install_requires=["tensorflow>=2.3.0"],
