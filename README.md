@@ -30,6 +30,18 @@ spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되�
 
 물론 savedmodel이 레포지토리의 scripts.convert_to_savedmodel 스크립트를 통해 변환된 경우만 가능합니다.
 
+```python
+from quickspacer import Spacer
+
+# Level 1 Default, Same as Spacer()
+spacer1 = Spacer(1)
+# Level 2
+spacer2 = Spacer(2)
+# Level 3
+spacer1 = Spacer(level=3)
+```
+Spacer의 인스턴스를 만들 때 위와 같이 level 인자를 넘겨줄 수 있습니다. (기본: 1) 레벨은 높을수록 일반적인 띄어쓰기 성능이 향상되며 대신 속도가 더 오래걸립니다.
+
 # Train
 
 ## Make Vocab
