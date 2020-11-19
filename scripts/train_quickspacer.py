@@ -35,7 +35,13 @@ if __name__ == "__main__":
     parser.add_argument("--val-batch-size", type=int, default=8192)
     parser.add_argument("--num-val-batch", type=int, default=30000)
     parser.add_argument("--tensorboard-update-freq", type=int, default=100)
+    parser.add_argument("--mixed-precision", action="store_true", help="Use mixed precision FP16")
     args = parser.parse_args()
+
+    if args.mixed_precision:
+        policy = tf.keras.mixed_precision.experimental.Policy("mixed_float16")
+        tf.keras.mixed_precision.experimental.set_policy(policy)
+        print("Use Mixed Precision FP16")
 
     # Copy config file
     os.makedirs(args.output_path)
