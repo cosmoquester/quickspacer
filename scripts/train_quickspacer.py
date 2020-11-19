@@ -3,6 +3,7 @@ import glob
 import json
 import os
 import shutil
+import sys
 
 import tensorflow as tf
 import tensorflow_addons as tfa
@@ -51,8 +52,13 @@ if __name__ == "__main__":
     shutil.copy(args.model_config_file, args.output_path)
 
     # Construct Dataset
+    dataset_files = glob.glob(args.dataset_file_path)
+    if not dataset_files:
+        print("[Error] Dataset path is not valid!", file=sys.stderr)
+        sys.exit(1)
+
     dataset = get_dataset(
-        glob.glob(args.dataset_file_path),
+        dataset_files,
         args.min_space_remove_rate,
         args.max_space_remove_rate,
         args.num_parallel_reads,
