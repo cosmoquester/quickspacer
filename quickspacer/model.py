@@ -46,7 +46,8 @@ class ConvSpacer2(tf.keras.Model):
         output = self.conv1(embedded)
 
         # Batch x SequenceLength x (EmbeddingDim + HiddenDim)
-        output = tf.concat([embedded, output], axis=2)
+        # Cast to tf.float32, because of mixed precision
+        output = tf.concat([tf.cast(embedded, tf.float32), tf.cast(output, tf.float32)], axis=2)
 
         # Batch x SequenceLength x HiddenDim
         output = self.conv2(output)
@@ -92,7 +93,16 @@ class ConvSpacer3(tf.keras.Model):
         output3 = self.conv3(embedded)
 
         # Batch x SequenceLength x (EmbeddingDim + HiddenDim x 3)
-        output = tf.concat([embedded, output1, output2, output3], axis=2)
+        # Cast to tf.float32, because of mixed precision
+        output = tf.concat(
+            [
+                tf.cast(embedded, tf.float32),
+                tf.cast(output1, tf.float32),
+                tf.cast(output2, tf.float32),
+                tf.cast(output3, tf.float32),
+            ],
+            axis=2,
+        )
         output = self.dropout(output)
 
         # Batch x SequenceLength x HiddenDim
