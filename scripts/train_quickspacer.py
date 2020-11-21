@@ -67,8 +67,12 @@ if __name__ == "__main__":
         args.num_parallel_calls,
         args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
-    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size).repeat()
+    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
     valid_dataset = dataset.take(args.num_val_batch).padded_batch(max(args.batch_size, args.val_batch_size))
+
+    if args.steps_per_epoch:
+        train_dataset.repeat()
+        print("Repeat dataset")
 
     # Model Initialize
     with open(args.model_config_file) as f:
