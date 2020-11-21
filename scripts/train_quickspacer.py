@@ -14,6 +14,7 @@ from quickspacer.data import get_dataset
 from quickspacer.utils import f1_loss, f1_score, learning_rate_scheduler
 
 if __name__ == "__main__":
+    # fmt: off
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="ConvSpacer1")
     parser.add_argument("--model-config-file", type=str, default="configs/conv1-spacer-config.json")
@@ -36,8 +37,9 @@ if __name__ == "__main__":
     parser.add_argument("--val-batch-size", type=int, default=8192)
     parser.add_argument("--num-val-batch", type=int, default=30000)
     parser.add_argument("--tensorboard-update-freq", type=int, default=100)
-    parser.add_argument("--mixed-precision", action="store_true", help="Use mixed precision FP16")
+    parser.add_argument("--disable-mixed-precision", action="store_false", dest="mixed_precision", help="Use mixed precision FP16")
     args = parser.parse_args()
+    # fmt: on
 
     if args.mixed_precision:
         policy = tf.keras.mixed_precision.experimental.Policy("mixed_float16")
