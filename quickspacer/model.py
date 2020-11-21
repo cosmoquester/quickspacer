@@ -10,7 +10,7 @@ class ConvSpacer1(tf.keras.Model):
         self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
         self.conv = tf.keras.layers.Conv1D(hidden_dim, kernel_size, activation="relu", padding="same")
         self.dropout = tf.keras.layers.Dropout(dropout)
-        self.dense = tf.keras.layers.Dense(1)
+        self.dense = tf.keras.layers.Conv1D(1, 3, padding="same")
 
     def call(self, inputs, training=None):
         # Batch x SequenceLength x EmbeddingDim
@@ -36,7 +36,7 @@ class ConvSpacer2(tf.keras.Model):
         self.conv2 = tf.keras.layers.Conv1D(hidden_dim, kernel_size2, activation="relu", padding="same")
         self.dropout = tf.keras.layers.Dropout(dropout)
 
-        self.dense = tf.keras.layers.Dense(1)
+        self.dense = tf.keras.layers.Conv1D(1, 3, padding="same")
 
     def call(self, inputs, training=None):
         # Batch x SequenceLength x EmbeddingDim
@@ -80,7 +80,7 @@ class ConvSpacer3(tf.keras.Model):
         self.dropout = tf.keras.layers.Dropout(dropout)
 
         self.conv4 = tf.keras.layers.Conv1D(hidden_dim, kernel_size4, activation="relu", padding="same")
-        self.dense = tf.keras.layers.Dense(1)
+        self.dense = tf.keras.layers.Conv1D(1, 3, padding="same")
 
     def call(self, inputs, training=None):
         # Batch x SequenceLength x EmbeddingDim
