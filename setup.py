@@ -12,8 +12,8 @@ setup(
     package_data={
         "quickspacer": [
             "resources/vocab.txt",
-            "resources/default_saved_model/1/*",
-            "resources/default_saved_model/1/*/*",
+            "resources/default_saved_model/*/*",
+            "resources/default_saved_model/*/*/*",
         ]
     },
 )
