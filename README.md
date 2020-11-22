@@ -13,7 +13,7 @@
 # Install & Usage
 
 ```bash
-pip3 install git+https://github.com/psj8252/quickspacer.git
+pip install quickspacer
 ```
 위 명령어로 설치하실 수 있습니다.
 
