@@ -10,6 +10,7 @@ if __name__ == "__main__":
     parser.add_argument("--control_flow_v2", action="store_false")
     parser.add_argument("--strip-debug-ops", action="store_false")
     parser.add_argument("--skip-op-check", action="store_true")
+    parser.add_argument("--quantize", choices=["float16", "uint8", "uint16"], default=None)
     parser.add_argument("--experiments", action="store_true", help="enable experimental features")
     args = parser.parse_args()
     # fmt: on
@@ -17,6 +18,7 @@ if __name__ == "__main__":
     tensorflowjs.converters.convert_tf_saved_model(
         args.saved_model_path,
         args.output_path,
+        quantization_dtype_map={args.quantize: "*"} if args.quantize else None,
         signature_def="model_inference",
         strip_debug_ops=args.strip_debug_ops,
         control_flow_v2=args.control_flow_v2,

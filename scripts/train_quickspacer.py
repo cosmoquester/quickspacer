@@ -3,6 +3,7 @@ import glob
 import json
 import os
 import shutil
+import sys
 
 import tensorflow as tf
 import tensorflow_addons as tfa
@@ -13,29 +14,37 @@ from quickspacer.data import get_dataset
 from quickspacer.utils import f1_loss, f1_score, learning_rate_scheduler
 
 if __name__ == "__main__":
+    # fmt: off
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-name", type=str, default="ConvSpacer1")
     parser.add_argument("--model-config-file", type=str, default="configs/conv1-spacer-config.json")
     parser.add_argument("--pretrained-model-path", type=str, default=None)
-    parser.add_argument("--min-space-remove-rate", type=float, default=0.3)
-    parser.add_argument("--max-space-remove-rate", type=float, default=0.9)
+    parser.add_argument("--min-space-remove-rate", type=float, default=0.4)
+    parser.add_argument("--max-space-remove-rate", type=float, default=1.0)
     parser.add_argument("--shuffle-buffer-size", type=int, default=100000)
     parser.add_argument("--vocab-file-path", type=str, default=DEFAULT_VOCAB_PATH, help="vocab file path")
     parser.add_argument("--num-parallel-reads", type=int, default=4)
     parser.add_argument("--num-parallel-calls", type=int, default=4)
     parser.add_argument("--output-path", default="quickspacer_checkpoints/")
-    parser.add_argument("--dataset-file-path", default="drama_all.txt", help="a text file or multiple files ex) *.txt")
+    parser.add_argument("--dataset-file-path", required=True, help="a text file or multiple files ex) *.txt")
     parser.add_argument("--loss", type=str, choices=["f1", "bce"], default="bce", help="loss function for training")
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--steps-per-epoch", type=int, default=None)
     parser.add_argument("--learning-rate", type=float, default=2e-3)
-    parser.add_argument("--weight-decay", type=float, default=1e-5)
+    parser.add_argument("--weight-decay", type=float, default=0)
     parser.add_argument("--min-learning-rate", type=float, default=1e-8)
     parser.add_argument("--batch-size", type=int, default=8192)
     parser.add_argument("--val-batch-size", type=int, default=8192)
     parser.add_argument("--num-val-batch", type=int, default=30000)
     parser.add_argument("--tensorboard-update-freq", type=int, default=100)
+    parser.add_argument("--disable-mixed-precision", action="store_false", dest="mixed_precision", help="Use mixed precision FP16")
     args = parser.parse_args()
+    # fmt: on
+
+    if args.mixed_precision:
+        policy = tf.keras.mixed_precision.experimental.Policy("mixed_float16")
+        tf.keras.mixed_precision.experimental.set_policy(policy)
+        print("Use Mixed Precision FP16")
 
     # Copy config file
     os.makedirs(args.output_path)
@@ -45,16 +54,25 @@ if __name__ == "__main__":
     shutil.copy(args.model_config_file, args.output_path)
 
     # Construct Dataset
+    dataset_files = glob.glob(args.dataset_file_path)
+    if not dataset_files:
+        print("[Error] Dataset path is not valid!", file=sys.stderr)
+        sys.exit(1)
+
     dataset = get_dataset(
-        glob.glob(args.dataset_file_path),
+        dataset_files,
         args.min_space_remove_rate,
         args.max_space_remove_rate,
         args.num_parallel_reads,
         args.num_parallel_calls,
         args.vocab_file_path,
     ).shuffle(args.shuffle_buffer_size)
-    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size).repeat()
+    train_dataset = dataset.skip(args.num_val_batch).padded_batch(args.batch_size)
     valid_dataset = dataset.take(args.num_val_batch).padded_batch(max(args.batch_size, args.val_batch_size))
+
+    if args.steps_per_epoch:
+        train_dataset.repeat()
+        print("Repeat dataset")
 
     # Model Initialize
     with open(args.model_config_file) as f:
