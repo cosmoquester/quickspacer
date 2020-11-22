@@ -19,7 +19,7 @@ def sentence_to_index(
 
     # 'TextVectorization' has default tokens of "", "[UNK]" which are not used but not removable
     # So for correct mapping, should minus 2
-    mapped = mapped - 2
+    mapped = tf.where(mapped != 1, mapped - 2, 1)
     return tf.cast(mapped, tf.int32)
 
 
