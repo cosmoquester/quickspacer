@@ -1,5 +1,6 @@
-from quickspacer import Spacer
 import pytest
+
+from quickspacer import Spacer
 
 
 @pytest.fixture
