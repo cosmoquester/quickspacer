@@ -57,24 +57,17 @@ if __name__ == "__main__":
             partial(sentence_to_index, vocab=vocab),
             texts,
             fn_output_signature=tf.RaggedTensorSpec([None], tf.int32, ragged_rank=0),
-        )
-        dataset = tf.data.Dataset.from_tensor_slices(tokens)
-        dataset = dataset.map(lambda x: x)  # For using padded_batch from dataset made of RaggedTensor
-        dataset = dataset.padded_batch(batch_size)
-        original_texts = tf.data.Dataset.from_tensor_slices(texts).batch(batch_size)
+        ).to_tensor()
 
-        all_spaced_sentences = tf.constant((), dtype=tf.string)
-        for texts, input_data in tf.data.Dataset.zip((original_texts, dataset)):
-            # Inference
-            output = model(input_data)
+        # Model inference
+        output = model(tokens)
 
-            # Make spaced sentence
-            texts = tf.strings.unicode_split(texts, "UTF-8")
-            spaced_sentences = tf.where(output < threshold, texts.to_tensor(), (texts + " ").to_tensor())
-            spaced_sentences = tf.strings.reduce_join(spaced_sentences, axis=1)
-            all_spaced_sentences = tf.concat((all_spaced_sentences, spaced_sentences), axis=0)
+        # Make spaced sentence
+        texts = tf.strings.unicode_split(texts, "UTF-8").to_tensor()
+        spaced_sentences = tf.where(output < threshold, texts, texts + " ")
+        spaced_sentences = tf.strings.strip(tf.strings.reduce_join(spaced_sentences, axis=1))
 
-        return {"spaced_sentences": all_spaced_sentences}
+        return {"spaced_sentences": spaced_sentences}
 
     @tf.function(input_signature=[tf.TensorSpec((None, None), tf.int32)])
     def model_inference(tokens):
