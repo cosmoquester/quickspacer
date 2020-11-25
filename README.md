@@ -22,8 +22,13 @@ from quickspacer import Spacer
 
 spacer = Spacer()
 spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되어있는 좋은 말"])
+spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되어있는 좋은 말", ...], batch_size=48)
 ```
 이런식으로 사용하실 수 있습니다. spacer.space() 함수는 띄어쓰기가 된 리스트를 반환합니다.
+
+batch_size옵션을 사용하면 batch단위로 묶여 연산합니다.
+batch내에 있는 문장들은 가장 긴 문장길이를 기준으로 나머지 문장은 padding하여 연산을 진행하므로 batch_size가 너무 크고 길이가 엄청 긴 문장이 들어있다면 전체 추론 속도가 느려질 수 있습니다.
+batch_size를 따로 넘기지 않으면 입력 데이터 전체를 한 번에 계산합니다.
 
 ```python
 from quickspacer import Spacer
