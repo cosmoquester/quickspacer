@@ -25,8 +25,13 @@ spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되�
 ```
 이런식으로 사용하실 수 있습니다. spacer.space() 함수는 띄어쓰기가 된 리스트를 반환합니다.
 
+```python
+from quickspacer import Spacer
 
-만약 모델을 따로 학습시키셨다면, `spacer = Spacer(saved_model_dir="somewhere/my_custom_savedmodel_dir")`로 인자를 넘겨 직접학습한 모델을 사용할 수 있습니다.
+spacer = Spacer("somewhere/my_custom_savedmodel_dir")
+spacer = Spacer(saved_model_dir="somewhere/my_custom_savedmodel_dir")
+```
+만약 모델을 따로 학습시키셨다면, 위와 같이 saved_model 경로를 인자로 넘겨 직접학습한 모델을 사용할 수 있습니다.
 
 물론 savedmodel이 레포지토리의 scripts.convert_to_savedmodel 스크립트를 통해 변환된 경우만 가능합니다.
 
@@ -34,9 +39,9 @@ spacer.space(["띄어쓰기를안한나쁜말", "또는 띄어쓰기가 잘 되�
 from quickspacer import Spacer
 
 # Level 1 Default, Same as Spacer()
-spacer1 = Spacer(1)
+spacer1 = Spacer(level=1)
 # Level 2
-spacer2 = Spacer(2)
+spacer2 = Spacer(level=2)
 # Level 3
 spacer1 = Spacer(level=3)
 ```
