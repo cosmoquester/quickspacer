@@ -29,7 +29,7 @@ def get_dataset(
     :param oov_index: OOV index.
     :param space_index: " " character index in vocab.
     """
-    vocab = load_vocab(vocab_file_path)
+    vocab = load_vocab(vocab_file_path, oov_index)
     dataset = (
         tf.data.TextLineDataset(dataset_file_path, num_parallel_reads=num_parallel_reads)
         .map(partial(sentence_to_index, vocab=vocab, oov_index=oov_index), num_parallel_calls=num_parallel_calls)
@@ -46,18 +46,14 @@ def get_dataset(
     return dataset
 
 
-def sentence_to_index(
-    sentence: tf.Tensor, vocab: tf.python.ops.lookup_ops.StaticVocabularyTable, oov_index=DEFAULT_OOV_INDEX
-) -> tf.Tensor:
+def sentence_to_index(sentence: tf.Tensor, vocab: tf.lookup.StaticHashTable) -> tf.Tensor:
     """
     Mapping character to number with vocab
 
     :param sentence: string type 0D (scalar) tensor of sentence.
     :param vocab: vocab loaded using 'load_vocab'.
-    :param oov_index: out of vocabulary index.
     """
     mapped = vocab.lookup(tf.strings.unicode_split(sentence, "UTF-8"))
-    mapped = tf.where(mapped < vocab.size() - 1, mapped, tf.cast(oov_index, tf.int64))
     return tf.cast(mapped, tf.int32)
 
 
@@ -94,11 +90,16 @@ def sentence_to_dataset(
     return tf.gather(token_ords, tf.where(token_ords != -1))[:, 0], labels
 
 
-def load_vocab(vocab_file_path: str) -> tf.lookup.StaticVocabularyTable:
+def load_vocab(vocab_file_path: str, oov_index: Union[int, tf.Tensor]) -> tf.lookup.StaticHashTable:
     """
     Load vocab from file
     """
-    vocab = tf.lookup.StaticVocabularyTable(
+    if isinstance(oov_index, int):
+        oov_index = tf.constant(oov_index, tf.int64)
+    if isinstance(oov_index, tf.Tensor):
+        oov_index = tf.cast(oov_index, tf.int64)
+
+    vocab = tf.lookup.StaticHashTable(
         tf.lookup.TextFileInitializer(
             vocab_file_path,
             key_dtype=tf.string,
@@ -107,6 +108,6 @@ def load_vocab(vocab_file_path: str) -> tf.lookup.StaticVocabularyTable:
             value_index=tf.lookup.TextFileIndex.LINE_NUMBER,
             delimiter="\n",
         ),
-        num_oov_buckets=1,
+        default_value=oov_index,
     )
     return vocab
