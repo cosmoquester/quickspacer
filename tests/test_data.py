@@ -31,5 +31,6 @@ def test_sentence_to_dataset(token_ords, remove_rate):
             restored_data.append(DEFAULT_SPACE_INDEX)
 
     tf.debugging.assert_equal(
-        token_ords, tf.concat(restored_data, axis=0),
+        token_ords,
+        tf.concat(restored_data, axis=0),
     )

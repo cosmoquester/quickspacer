@@ -55,5 +55,7 @@ if __name__ == "__main__":
 
     model.vocab = vocab
     tf.saved_model.save(
-        model, args.output_path, signatures={"serving_default": space_texts, "model_inference": model_inference},
+        model,
+        args.output_path,
+        signatures={"serving_default": space_texts, "model_inference": model_inference},
     )

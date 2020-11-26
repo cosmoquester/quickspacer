@@ -20,3 +20,10 @@ def test_batch_space(model1):
 
 def test_empty_space(model2):
     assert model2.space([]) == []
+
+
+def test_invalid_level():
+    with pytest.raises(AssertionError):
+        Spacer(level=4)
+    with pytest.raises(Exception):
+        Spacer(saved_model_dir="")
