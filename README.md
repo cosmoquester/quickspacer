@@ -1,6 +1,6 @@
 # QuickSpacer
 
-[![codecov](https://codecov.io/gh/psj8252/quickspacer/branch/master/graph/badge.svg)](https://codecov.io/gh/psj8252/quickspacer)
+[![codecov](https://codecov.io/gh/cosmoquester/quickspacer/branch/master/graph/badge.svg)](https://codecov.io/gh/cosmoquester/quickspacer)
 
 
 - 빠른 속도와 준수한 정확도를 목표로하는 한국어 띄어쓰기 교정 모델입니다.
@@ -8,7 +8,7 @@
 
 # Demo
 
-데모는 Tensorflow JS로 만들어져 있으며 https://psj8252.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
+데모는 Tensorflow JS로 만들어져 있으며 https://cosmoquester.github.io/quickspacer/ 에서 사용해보실 수 있습니다.
 
 # Install & Usage
 
