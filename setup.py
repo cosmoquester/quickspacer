@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",
     python_requires=">=3.6",
     install_requires=["tensorflow>=2.1"],
-    url="https://github.com/psj8252/quickspacer.git",
+    url="https://github.com/cosmoquester/quickspacer.git",
     author="Park Sangjun",
     keywords=["spacer", "korean"],
     classifiers=[
