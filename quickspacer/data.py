@@ -32,7 +32,7 @@ def get_dataset(
     vocab = load_vocab(vocab_file_path, oov_index)
     dataset = (
         tf.data.TextLineDataset(dataset_file_path, num_parallel_reads=num_parallel_reads)
-        .map(partial(sentence_to_index, vocab=vocab, oov_index=oov_index), num_parallel_calls=num_parallel_calls)
+        .map(partial(sentence_to_index, vocab=vocab), num_parallel_calls=num_parallel_calls)
         .map(
             partial(
                 sentence_to_dataset,
